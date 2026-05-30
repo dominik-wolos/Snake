@@ -2,6 +2,8 @@
 
 Python turtle version of Snake.
 
+See [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) for an overview of architecture, features, and project structure.
+
 ## Run
 
 ```bash
@@ -15,7 +17,7 @@ Close the window to return to the terminal prompt.
 
 The project uses a local `.venv` managed by `uv`.
 Runtime modules are from the Python standard library, so there are no external package dependencies.
-The project is pinned to Python 3.12 because the newer Homebrew Python builds on this machine do not include Tk support required by Turtle.
+The project is pinned to Python 3.12 because the newer Homebrew Python builds on some machines have some issues with TKINTER.
 
 ## Controls
 
@@ -43,14 +45,10 @@ The game uses SQLite from the Python standard library.
 - `snake.py` starts the app.
 - `snake_game/domain` contains game rules and domain models.
 - `snake_game/application` connects the game rules with saved user state and repository ports.
-- `snake_game/infrastructure` contains SQLite schema, stores, repository facade, and player identification.
-- `snake_game/ui/turtle_app.py` owns the Turtle app shell.
-- `snake_game/ui/app_controller.py` handles screen flow and game lifecycle actions.
-- `snake_game/ui/app_actions.py` handles clickable and keyboard-triggered UI actions.
-- `snake_game/ui/input_bindings.py` wires keyboard and mouse input.
+- `snake_game/infrastructure` contains SQLite and player identification.
+- `snake_game/ui/turtle_app.py` handles keyboard input and the main UI loop.
 - `snake_game/ui/navigation.py` contains UI screen and button models.
-- `snake_game/ui/screens` contains screen-specific drawing code.
-- `snake_game/ui/turtle_renderer.py` dispatches rendering to screen modules.
+- `snake_game/ui/turtle_renderer.py` draws the screen.
 - `snake_game/ui/turtle_window.py` configures the Turtle window.
 
 ## Tests
