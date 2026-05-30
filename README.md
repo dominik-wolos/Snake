@@ -1,51 +1,66 @@
-# 🐍 Gra Snake w Pythonie (Moduł Turtle)
+# Snake
 
-Prosta implementacja klasycznej gry "Snake" (Wąż) napisana w języku Python z wykorzystaniem wbudowanej biblioteki `turtle`. Projekt idealny na zaliczenie zajęć z podstaw programowania.
+Python turtle version of Snake.
 
-## 🚀 Wymagania i Uruchomienie
+## Run
 
-Aby uruchomić grę, potrzebujesz zainstalowanego [Pythona](https://www.python.org/) w wersji 3.x. Gra korzysta wyłącznie z wbudowanych modułów, więc nie wymaga instalowania żadnych zewnętrznych bibliotek.
+```bash
+uv sync
+uv run python snake.py
+```
 
-1. Pobierz plik `snake.py` na swój komputer.
-2. Otwórz terminal / wiersz poleceń w folderze z plikiem.
-3. Uruchom grę wpisując:
-   ```bash
-   python snake.py
+The terminal stays busy because the Turtle window runs an event loop.
+Click the game window, then press `Enter` to start.
+Close the window to return to the terminal prompt.
 
+The project uses a local `.venv` managed by `uv`.
+Runtime modules are from the Python standard library, so there are no external package dependencies.
+The project is pinned to Python 3.12 because the newer Homebrew Python builds on this machine do not include Tk support required by Turtle.
 
-Opis:
+## Controls
 
-# Sekcja Początkowa: Narzędzia i ustawienia
-* import ...: Na samym początku sprowadzamy do programu trzy "skrzynki z narzędziami". turtle posłuży nam do rysowania grafiki, time do kontrolowania prędkości gry, a random do losowania pozycji jedzenia.
-* Zmienne początkowe: opoznienie = 0.1 to pauza między każdą "klatką" gry. Dzięki temu wąż porusza się w tempie, które pozwala graczowi zareagować (inaczej latałby z prędkością światła).
- 
-## 🖥️ Krok 1: Przygotowanie planszy
-* Tworzymy okno gry (okno), nadajemy mu czarne tło i rozmiar 600x600 pikseli.
-* okno.tracer(0): To bardzo ważna funkcja! Wyłącza ona pokazywanie żmudnego procesu rysowania figur przez system. Dzięki temu gra nie pokazuje, jak kwadracik powoli przesuwa się po ekranie, tylko "teleportuje" go na nowe miejsce, tworząc złudzenie płynnego skoku na kolejną kratkę.
-  
-## 🐍 Krok 2 i 3: Aktorzy (Wąż i Jedzenie)
-* Głowa: Tworzymy obiekt (tzw. "żółwia"), nadajemy mu kształt kwadratu, kolor zielony i ustawiamy na samym środku ekranu – czyli na współrzędnych X=0, Y=0. Podnosimy też pisak (penup()), żeby wąż nie zostawiał za sobą kreski jak flamaster. Nadajemy mu początkowy stan: kierunek = "stop", więc wąż czeka na ruch gracza.
-* Jedzenie: Robimy dokładnie to samo, co przy głowie, ale zmieniamy kształt na kółko, kolor na czerwony i przesuwamy nieco wyżej (X=0, Y=100), żeby wąż nie zjadł go od razu na starcie.
-* cialo = []: To jest serce mechaniki wzrostu. Tworzymy pustą listę (taki "worek"), do której będziemy wrzucać kolejne kwadraciki, gdy wąż zje jabłko.
-  
-## 🕹️ Krok 4: System poruszania się
-* Funkcje zmiany kierunku: Napisałeś cztery małe funkcje (w_gore, w_dol, itd.). Zauważ, że mają one wbudowane zabezpieczenie – wąż idący w górę nie może nagle pójść w dół (nie może wejść sam w siebie). Zmieniają one tylko "stan umysłu" węża (czyli zmienną kierunek).
-* Funkcja ruch(): To tutaj dzieje się fizyczne przesunięcie. Program sprawdza, w jakim kierunku patrzy głowa. Jeśli w górę, bierze jej obecną pozycję Y, dodaje do niej 20 pikseli (tyle szerokości ma nasz kwadrat) i ustawia głowę w nowym miejscu.
-  
-## ⌨️ Krok 5: Klawiatura
-* okno.listen() każe programowi nadstawić uszu na to, co robisz na klawiaturze. Przypisujemy strzałki na klawiaturze ("Up", "Down" itd.) do funkcji z Kroku 4. Zatem wciśnięcie strzałki w górę wywołuje funkcję w_gore.
-  
-## 🔄 Krok 6: Główna pętla gry (Silnik)
-To jest kod zamknięty w while True:. Kręci się on w kółko bez przerwy aż do wyłączenia programu. To tutaj tętni życie gry.
-1. Odświeżenie ekranu (okno.update()): Ponieważ na początku wyłączyliśmy automatyczne odświeżanie (tracer(0)), teraz musimy ręcznie co ułamek sekundy mówić systemowi: "pokaż graczowi, co narysowałem".
-2. Śmierć od ściany: Program sprawdza, czy pozycja X lub Y głowy węża przekroczyła 290 lub -290 pikseli (czyli krawędzie okna). Jeśli tak, gra się resetuje: wąż wraca na środek, kierunek to "stop", a wszystkie segmenty jego ciała są "teleportowane" daleko poza ekran (1000, 1000) i usuwane z listy cialo.
-3. Zjedzenie jabłka (Inteligentne): Program mierzy odległość głowy od jedzenia. Jeśli wynosi mniej niż 20 pikseli (nachodzą na siebie):
-    * Wchodzi w pętlę losowania nowego miejsca (while not dobre_miejsce).
-    * Losuje punkty, ale za każdym razem sprawdza, czy to wylosowane miejsce nie leży dokładnie na głowie albo na którymś z kwadracików tworzących ogon.
-    * Gdy znajdzie bezpieczne miejsce, przenosi tam jabłko.
-    * Tworzy nowy, jasnozielony kwadrat i wrzuca go do "worka" (listy cialo).
-4. Poruszanie ogonem: To bardzo sprytny mechanizm. Zamiast kazać każdemu segmentowi osobno "myśleć" gdzie ma iść, robimy tak: pętla idzie od końca ogona i każdy kwadracik przesuwa się na miejsce kwadracika, który był tuż przed nim. Pierwszy segment tuż za głową idzie na miejsce głowy.
-5. Wykonanie kroku głowy: Odpalamy funkcję ruch(), która przesuwa samą głowę na nowe pole.
-6. Śmierć od własnego ogona: Program przegląda listę cialo i sprawdza, czy którykolwiek z segmentów dotyka głowy. Jeśli tak – następuje reset gry (podobnie jak przy zderzeniu ze ścianą).
-7. Pauza (time.sleep(opoznienie)): Pętla czeka ułamek sekundy (0.1s), zanim zacznie całą procedurę od nowa.
-Na samym końcu okno.mainloop() utrzymuje okno otwarte, żeby po skończonej grze po prostu nie zniknęło.
+- Click `Start Game` or press `Enter` to start.
+- Arrow keys move the snake.
+- `P` pauses or resumes and shows the pause view.
+- `Esc` opens the pause view.
+- The pause view contains `Resume`, `Settings`, and `Main Menu`.
+- `Settings` changes name, snake color, or background color.
+- On game over, click `Revive` or press `R` if the player has enough coins.
+- `C` cycles snake color, `1` to `5` picks a snake color directly.
+- `N` changes the displayed player name.
+
+## Data
+
+The game uses SQLite from the Python standard library.
+
+- `leaderboard.db` stores users, scores, coins, selected snake color, and selected background.
+- The player is identified by a hashed device identifier.
+- If a hardware identifier cannot be read, the game creates `.player_id` and uses that.
+- IP address is not used.
+
+## Code Layout
+
+- `snake.py` starts the app.
+- `snake_game/domain` contains game rules and domain models.
+- `snake_game/application` connects the game rules with saved user state and repository ports.
+- `snake_game/infrastructure` contains SQLite schema, stores, repository facade, and player identification.
+- `snake_game/ui/turtle_app.py` owns the Turtle app shell.
+- `snake_game/ui/app_controller.py` handles screen flow and game lifecycle actions.
+- `snake_game/ui/app_actions.py` handles clickable and keyboard-triggered UI actions.
+- `snake_game/ui/input_bindings.py` wires keyboard and mouse input.
+- `snake_game/ui/navigation.py` contains UI screen and button models.
+- `snake_game/ui/screens` contains screen-specific drawing code.
+- `snake_game/ui/turtle_renderer.py` dispatches rendering to screen modules.
+- `snake_game/ui/turtle_window.py` configures the Turtle window.
+
+## Tests
+
+```bash
+uv run python -m unittest discover -s tests
+```
+
+## Notes
+
+Food gives score and coins.
+Bonus coins can appear on the board.
+Revive costs coins and keeps the current score.

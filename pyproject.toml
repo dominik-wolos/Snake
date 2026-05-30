@@ -1,0 +1,10 @@
+[project]
+name = "snake"
+version = "0.1.0"
+description = "Python turtle Snake game with local leaderboard."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[tool.uv]
+package = false

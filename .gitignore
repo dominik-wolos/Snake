@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+leaderboard.db
+leaderboard.db-*
+.player_id
